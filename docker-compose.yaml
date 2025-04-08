@@ -1,0 +1,54 @@
+version: "3.8"
+
+services:
+  redis:
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+
+  traefik:
+    image: traefik:v2.10
+    command:
+      - "--entrypoints.web.address=:80"
+      - "--entrypoints.websecure.address=:443"
+      - "--providers.file.directory=/etc/traefik/dynamic"
+      - "--providers.file.watch=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge=true"
+      - "--certificatesresolvers.letsencrypt.acme.httpchallenge.entrypoint=web"
+      - "--certificatesresolvers.letsencrypt.acme.email=admin@seudominio.com"
+      - "--certificatesresolvers.letsencrypt.acme.storage=/letsencrypt/acme.json"
+      - "--api.dashboard=true"
+      - "--api.insecure=true"
+    ports:
+      - "80:80"
+      - "443:443"
+      - "8080:8080" # dashboard
+    volumes:
+      - ./letsencrypt:/letsencrypt
+      - ./traefik/dynamic:/etc/traefik/dynamic
+    depends_on:
+      - redis
+
+  app:
+    build:
+      context: .
+    volumes:
+      - .:/var/www/html
+    environment:
+      - APP_ENV=local
+      - APP_KEY=base64:SomeFakeKeyGeneratedHere==
+      - CACHE_DRIVER=redis
+      - REDIS_HOST=redis
+    depends_on:
+      - redis
+    command: php artisan serve --host=0.0.0.0 --port=80
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.app.rule=Host(`localhost`)"
+      - "traefik.http.routers.app.entrypoints=web"
+      - "traefik.http.services.app.loadbalancer.server.port=80"
+
+networks:
+  default:
+    name: laravel_traefik_net
+    external: false

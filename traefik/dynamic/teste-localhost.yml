@@ -1,0 +1,15 @@
+http:
+  routers:
+    teste-localhost-router:
+      rule: Host(`teste.localhost`)
+      entryPoints:
+        - web
+      service: teste-localhost-service
+      tls:
+        certResolver: letsencrypt
+  services:
+    teste-localhost-service:
+      loadBalancer:
+        servers:
+          -
+            url: 'http://app:80'

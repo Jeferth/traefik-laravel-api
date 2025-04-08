@@ -1,0 +1,13 @@
+http:
+  routers:
+    api-localhost-router:
+      rule: "Host(`api.localhost`)"
+      entryPoints:
+        - web
+      service: api-localhost-service
+
+  services:
+    api-localhost-service:
+      loadBalancer:
+        servers:
+          - url: "http://app:80"
