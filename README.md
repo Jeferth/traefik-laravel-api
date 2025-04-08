@@ -6,7 +6,7 @@ Este projeto demonstra como criar uma API em Laravel que gerencia domínios pers
 
 ## 🔧 Stack utilizada
 
-- Laravel 10
+- Laravel 12
 - PHP 8.2 (via Docker)
 - Traefik v2.10 (como reverse proxy)
 - Docker Compose
