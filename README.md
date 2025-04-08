@@ -28,8 +28,8 @@ Este projeto demonstra como criar uma API em Laravel que gerencia domínios pers
 ### 1. Clone o repositório
 
 ```bash
-git clone https://seurepositorio.com
-cd nome-do-projeto
+git clone https://github.com/Jeferth/traefik-laravel-api.git
+cd traefik-laravel-api
 ```
 
 ### 2. Instale as dependências do Laravel (opcional, se quiser rodar fora do container)
